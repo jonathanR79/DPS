@@ -2,9 +2,11 @@
 
 Dynatrace Platform Subscription (DPS) cost estimation calculator. Calculate your organization's DPS licensing costs based on actual usage patterns across multiple capabilities.
 
+![DPS Cost Calculator](img/dps.jpg)
+
 ## Test version running as Github Page
 
-[text](https://jonathanr79.github.io/DPS/)
+[https://jonathanr79.github.io/DPS/](https://jonathanr79.github.io/DPS/)
 
 ## Getting Started
 
