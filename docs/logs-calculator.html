@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPS Cost Calculator — Log Management Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">D</div>
+        <div class="logo-text">DPS <span>Cost Calculator</span></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Capabilities</a>
+        <a href="calculator.html">Calculator</a>
+        <a href="logs.html" class="active">Logs</a>
+        <a href="other.html">Other</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" style="padding: 2.5rem 2rem 4rem;">
+    <div class="hero-content">
+      <h1>
+        Log Management<br>
+        <span class="gradient-text">cost calculator</span>
+      </h1>
+      <p>Enter your expected log usage. The calculator will estimate your yearly DPS cost for log capabilities.</p>
+      <div class="steps-indicator">
+        <div class="step-item completed">
+          <div class="step-number">&#10003;</div>
+          <span>Select log capabilities</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item active">
+          <div class="step-number">2</div>
+          <span>Enter usage data</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <span>View estimate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="calculator-sections" id="calculator-sections"></div>
+
+    <!-- Total Summary -->
+    <div class="total-summary" id="total-summary" style="margin-top: 2rem;">
+      <div class="total-summary-title">Yearly cost estimate — Log Management</div>
+      <div class="total-breakdown" id="total-breakdown"></div>
+      <div class="total-divider"></div>
+      <div class="total-grand">
+        <div class="total-grand-label">Total yearly cost</div>
+        <div>
+          <div class="total-grand-value" id="total-grand-value">€0.00</div>
+          <div class="total-monthly" id="total-monthly">≈ €0.00 / month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar" style="margin-top: 1rem;">
+      <a href="logs.html" class="btn btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+        </svg>
+        Back to log capabilities
+      </a>
+      <button class="btn btn-primary" onclick="exportSummary()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Copy summary
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
+  </footer>
+
+  <script>
+    const RATE_CARD = {
+      LOG_MANAGEMENT_INGEST: { name: 'Log Ingest & Process', price: 0.094800, unit: 'per GiB ingested' },
+      LOG_MANAGEMENT_ANALYZE: { name: 'Log Query', price: 0.001657, unit: 'per GiB scanned' },
+      LOG_MANAGEMENT_RETAIN: { name: 'Log Retain', price: 0.000332, unit: 'per GiB-day retained' },
+      LOGS: { name: 'Log Monitoring Classic', price: 0.00000048, unit: 'per log event' }
+    };
+
+    const CAPABILITY_FORMS = {
+      LOG_MANAGEMENT_INGEST: {
+        icon: 'logs',
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>',
+        fields: [
+          { id: 'li_gib_day', label: 'GiB ingested per day', hint: 'Average volume of logs ingested per day in GiB', placeholder: 'e.g. 50', defaultValue: '' },
+          { id: 'li_days', label: 'Days per year', hint: 'Number of operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+        ],
+        calculate: (v) => {
+          const gib = parseFloat(v.li_gib_day) || 0;
+          const days = parseFloat(v.li_days) || 0;
+          return gib * days * RATE_CARD.LOG_MANAGEMENT_INGEST.price;
+        },
+        formula: 'GiB/day × days/year × €0.094800'
+      },
+
+      LOG_MANAGEMENT_ANALYZE: {
+        icon: 'logs',
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>',
+        fields: [
+          { id: 'la_gib_day', label: 'GiB scanned per day', hint: 'Average volume of logs queried/scanned per day in GiB', placeholder: 'e.g. 100', defaultValue: '' },
+          { id: 'la_days', label: 'Days per year', hint: 'Number of operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+        ],
+        calculate: (v) => {
+          const gib = parseFloat(v.la_gib_day) || 0;
+          const days = parseFloat(v.la_days) || 0;
+          return gib * days * RATE_CARD.LOG_MANAGEMENT_ANALYZE.price;
+        },
+        formula: 'GiB scanned/day × days/year × €0.001657'
+      },
+
+      LOG_MANAGEMENT_RETAIN: {
+        icon: 'logs',
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>',
+        fields: [
+          { id: 'lr_gib', label: 'GiB stored (avg)', hint: 'Average volume of retained logs in GiB', placeholder: 'e.g. 500', defaultValue: '' },
+          { id: 'lr_days', label: 'Days retained per year', hint: 'Number of days logs are retained (e.g. 35, 365)', placeholder: 'e.g. 35', defaultValue: '35' }
+        ],
+        calculate: (v) => {
+          const gib = parseFloat(v.lr_gib) || 0;
+          const days = parseFloat(v.lr_days) || 0;
+          return gib * days * RATE_CARD.LOG_MANAGEMENT_RETAIN.price;
+        },
+        formula: 'GiB stored × retention days × €0.000332'
+      },
+
+      LOGS: {
+        icon: 'logs',
+        iconSvg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+        fields: [
+          { id: 'lc_events_day', label: 'Log events per day', hint: 'Average number of log events per day', placeholder: 'e.g. 10000000', defaultValue: '' },
+          { id: 'lc_days', label: 'Days per year', hint: 'Number of operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+        ],
+        calculate: (v) => {
+          const events = parseFloat(v.lc_events_day) || 0;
+          const days = parseFloat(v.lc_days) || 0;
+          return events * days * RATE_CARD.LOGS.price;
+        },
+        formula: 'events/day × days/year × €0.00000048'
+      }
+    };
+
+    const STORAGE_KEY = 'selectedLogCapabilities';
+    let selectedCapabilities = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]');
+
+    if (selectedCapabilities.length === 0) {
+      window.location.href = 'logs.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('calculator-sections');
+      selectedCapabilities.forEach(capKey => {
+        const config = CAPABILITY_FORMS[capKey];
+        const rate = RATE_CARD[capKey];
+        if (!config || !rate) return;
+
+        const section = document.createElement('div');
+        section.className = 'calc-section fade-in';
+        section.id = `section-${capKey}`;
+        section.innerHTML = `
+          <div class="calc-section-header">
+            <div class="calc-section-icon ${config.icon}">${config.iconSvg}</div>
+            <div>
+              <div class="calc-section-title">${rate.name}</div>
+              <div class="calc-section-subtitle">${rate.unit} &mdash; €${rate.price.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')}</div>
+            </div>
+          </div>
+          <div class="calc-section-body">
+            <div class="form-grid">
+              ${config.fields.map(f => `
+                <div class="form-group">
+                  <label class="form-label" for="${f.id}">${f.label}</label>
+                  <input class="form-input" type="number" id="${f.id}" placeholder="${f.placeholder}" value="${f.defaultValue}" min="0" step="any" oninput="recalculate()">
+                  <span class="form-hint">${f.hint}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="info-box" style="margin-top: 1.25rem;">
+              <div class="info-box-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="info-box-text"><strong>Formula:</strong> ${config.formula}</div>
+            </div>
+          </div>
+          <div class="section-cost">
+            <span class="section-cost-label">Yearly cost:</span>
+            <span class="section-cost-value" id="cost-${capKey}">€0.00</span>
+          </div>
+        `;
+        container.appendChild(section);
+      });
+      recalculate();
+    });
+
+    function recalculate() {
+      let totalYearly = 0;
+      const breakdownEl = document.getElementById('total-breakdown');
+      breakdownEl.innerHTML = '';
+
+      selectedCapabilities.forEach(capKey => {
+        const config = CAPABILITY_FORMS[capKey];
+        const rate = RATE_CARD[capKey];
+        if (!config || !rate) return;
+        const values = {};
+        config.fields.forEach(f => { values[f.id] = document.getElementById(f.id)?.value || '0'; });
+        const cost = config.calculate(values);
+        totalYearly += cost;
+        const costEl = document.getElementById(`cost-${capKey}`);
+        if (costEl) costEl.textContent = formatCurrency(cost);
+        const row = document.createElement('div');
+        row.className = 'total-row';
+        row.innerHTML = `<span class="total-row-label">${rate.name}</span><span class="total-row-value">${formatCurrency(cost)}</span>`;
+        breakdownEl.appendChild(row);
+      });
+
+      document.getElementById('total-grand-value').textContent = formatCurrency(totalYearly);
+      document.getElementById('total-monthly').textContent = `≈ ${formatCurrency(totalYearly / 12)} / month`;
+    }
+
+    function formatCurrency(value) {
+      return '€' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function exportSummary() {
+      let summary = '=== DPS Yearly Cost Estimate — Log Management ===\n\n';
+      let total = 0;
+      selectedCapabilities.forEach(capKey => {
+        const config = CAPABILITY_FORMS[capKey];
+        const rate = RATE_CARD[capKey];
+        if (!config || !rate) return;
+        summary += `--- ${rate.name} ---\n`;
+        summary += `Rate: €${rate.price} ${rate.unit}\n`;
+        const values = {};
+        config.fields.forEach(f => {
+          const val = document.getElementById(f.id)?.value || '0';
+          values[f.id] = val;
+          summary += `${f.label}: ${val}\n`;
+        });
+        const cost = config.calculate(values);
+        total += cost;
+        summary += `Yearly cost: ${formatCurrency(cost)}\n\n`;
+      });
+      summary += `=== TOTAL ===\nYearly: ${formatCurrency(total)}\nMonthly: ${formatCurrency(total / 12)}\n`;
+
+      navigator.clipboard.writeText(summary).then(() => {
+        const btn = document.querySelector('.btn-primary');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Copied!';
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
+      }).catch(() => { prompt('Copy this summary:', summary); });
+    }
+  </script>
+</body>
+</html>

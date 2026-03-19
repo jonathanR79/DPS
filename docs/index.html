@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPS Cost Calculator — Select Capabilities</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">D</div>
+        <div class="logo-text">DPS <span>Cost Calculator</span></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="active">Capabilities</a>
+        <a href="calculator.html">Calculator</a>
+        <a href="logs.html">Logs</a>
+        <a href="other.html">Other</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Dynatrace Platform Subscription
+      </div>
+      <h1>
+        Estimate your<br>
+        <span class="gradient-text">DPS licence costs</span>
+      </h1>
+      <p>
+        The Dynatrace Platform Subscription (DPS) is a flexible, usage-based licensing model.
+        You commit an annual spend at the platform level and consume capabilities based on actual usage with transparent rate-card pricing.
+      </p>
+
+      <!-- Steps -->
+      <div class="steps-indicator">
+        <div class="step-item active">
+          <div class="step-number">1</div>
+          <span>Select capabilities</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <span>Enter usage data</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <span>View estimate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Section: Application & Infrastructure Observability -->
+    <div class="section-label">Application &amp; Infrastructure Observability</div>
+    <div class="capabilities-grid grid-3" id="capabilities-grid">
+
+      <!-- Full-Stack Monitoring -->
+      <div class="capability-card" data-capability="FULLSTACK_MONITORING" onclick="toggleCapability(this)">
+        <div class="card-header">
+          <div class="card-icon fullstack">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+            </svg>
+          </div>
+          <div class="card-checkbox">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Full-Stack Monitoring</h3>
+        <div class="card-subtitle">FULLSTACK_MONITORING</div>
+        <p class="card-description">
+          Comprehensive observability for applications, microservices, and infrastructure. Provides end-to-end visibility from your back-end infrastructure to your end users' devices, with automated root cause analysis powered by Dynatrace Intelligence.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Application Performance Monitoring (APM)
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Automated root cause analysis for end-to-end transactions
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Code-level profiling &amp; Kubernetes Platform Monitoring
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            OpenTelemetry metrics &amp; traces ingestion
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            10 days trace data retention (extendable to 10 years)
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">€0.002350</span>
+          <span class="card-price-unit">per memory-GiB-hour</span>
+        </div>
+      </div>
+
+      <!-- Infrastructure Monitoring -->
+      <div class="capability-card" data-capability="INFRASTRUCTURE_MONITORING" onclick="toggleCapability(this)">
+        <div class="card-header">
+          <div class="card-icon infra">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <div class="card-checkbox">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Infrastructure Monitoring</h3>
+        <div class="card-subtitle">INFRASTRUCTURE_MONITORING</div>
+        <p class="card-description">
+          Infrastructure observability for cloud, hyperscaler, and data center environments. Includes process, disk, memory, and network analysis with correlation of logs in context of hosts, cloud services, and databases.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Everything included in Foundation &amp; Discovery
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Process, disk, memory &amp; network analysis
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Log correlation in context of hosts &amp; cloud services
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Custom metrics for extensibility
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">€0.015810</span>
+          <span class="card-price-unit">per host-hour</span>
+        </div>
+      </div>
+
+      <!-- Foundation & Discovery -->
+      <div class="capability-card" data-capability="FOUNDATION_AND_DISCOVERY" onclick="toggleCapability(this)">
+        <div class="card-header">
+          <div class="card-icon foundation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+          <div class="card-checkbox">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Foundation &amp; Discovery</h3>
+        <div class="card-subtitle">FOUNDATION_AND_DISCOVERY</div>
+        <p class="card-description">
+          Basic infrastructure monitoring and IT inventory. Provides host health indicators, host and process topology detection, filesystem monitoring, and OS services monitoring.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Basic host health indicators
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Host &amp; process topology detection
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Filesystem monitoring (disk usage)
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            OS services monitoring
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">€0.004740</span>
+          <span class="card-price-unit">per host-hour</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section: Digital Experience Monitoring -->
+    <div class="section-label">Digital Experience Monitoring</div>
+    <div class="capabilities-grid grid-3">
+
+      <!-- Real User Monitoring -->
+      <div class="capability-card" data-capability="USER_SESSIONS" onclick="toggleCapability(this)">
+        <div class="card-header">
+          <div class="card-icon rum">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+          </div>
+          <div class="card-checkbox">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Real User Monitoring</h3>
+        <div class="card-subtitle">USER_SESSIONS</div>
+        <p class="card-description">
+          Gain full visibility into how real end users experience every digital transaction across web, mobile, and single-page applications. Capture and analyze customer experience data to understand performance impact on business outcomes.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Capture &amp; analysis of customer experience in every transaction
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Mobile application monitoring &amp; crash analysis
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Web &amp; single-page application performance tracking
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            35 days of data retention
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">€0.000920</span>
+          <span class="card-price-unit">per session</span>
+        </div>
+      </div>
+
+      <!-- Synthetic Monitoring - Browser -->
+      <div class="capability-card" data-capability="SYNTHETIC_MONITORING_BROWSER" onclick="toggleCapability(this)">
+        <div class="card-header">
+          <div class="card-icon browser">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div class="card-checkbox">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Browser Monitor / Clickpath</h3>
+        <div class="card-subtitle">SYNTHETIC_MONITORING_BROWSER</div>
+        <p class="card-description">
+          Monitor business-critical user workflows by simulating real browser visits. Create scripted transactions that run from global locations to proactively detect issues before they impact your users.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Web-based recorder for scripted transactions
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Multi-step clickpath monitoring
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Public &amp; private synthetic locations
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            35 days of data retention
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">€0.001830</span>
+          <span class="card-price-unit">per synthetic action</span>
+        </div>
+      </div>
+
+      <!-- Synthetic Monitoring - HTTP -->
+      <div class="capability-card" data-capability="SYNTHETIC_MONITORING_HTTP" onclick="toggleCapability(this)">
+        <div class="card-header">
+          <div class="card-icon http">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+            </svg>
+          </div>
+          <div class="card-checkbox">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">HTTP Monitor</h3>
+        <div class="card-subtitle">SYNTHETIC_MONITORING_HTTP</div>
+        <p class="card-description">
+          Check availability and performance of internal and external resources — websites or API endpoints. Lightweight, high-frequency pings that track uptime, response time, and HTTP status codes from locations around the world.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Availability, response time &amp; HTTP status tracking
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Global public &amp; private synthetic locations
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Multi-step API monitoring
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            35 days of data retention
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">€0.000410</span>
+          <span class="card-price-unit">per synthetic request</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section: More -->
+    <div class="section-label">More</div>
+    <div class="capabilities-grid grid-2">
+
+      <!-- Log Management Gateway -->
+      <div class="capability-card gateway-card" onclick="window.location.href='logs.html'">
+        <div class="card-header">
+          <div class="card-icon logs">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Log Management &amp; Analytics</h3>
+        <div class="card-subtitle">LOG_MANAGEMENT_* &bull; LOGS</div>
+        <p class="card-description">
+          Analyze logs in context and make smarter decisions when troubleshooting. Includes ingest &amp; processing, querying, retention, and classic log monitoring.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Log Ingest &amp; Process, Query, Retain
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Log Monitoring Classic
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">4 capabilities</span>
+          <span class="card-price-unit">open sub-calculator →</span>
+        </div>
+      </div>
+
+      <!-- Other Capabilities Gateway -->
+      <div class="capability-card gateway-card" onclick="window.location.href='other.html'">
+        <div class="card-header">
+          <div class="card-icon other">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+          </div>
+          <div class="card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </div>
+        </div>
+        <h3 class="card-title">Other Capabilities</h3>
+        <div class="card-subtitle">Security &bull; Traces &bull; Events &bull; More</div>
+        <p class="card-description">
+          All remaining DPS capabilities: application security, traces, business events, automation, serverless, custom metrics &amp; events, and more.
+        </p>
+        <ul class="card-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Security, Traces, Events, Automation
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Serverless, Mainframe, Custom Metrics &amp; more
+          </li>
+        </ul>
+        <div class="card-pricing">
+          <span class="card-price">17 capabilities</span>
+          <span class="card-price-unit">open sub-calculator →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DPS Info Box -->
+    <div class="info-box">
+      <div class="info-box-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="info-box-text">
+        <strong>About DPS:</strong> With Dynatrace Platform Subscription, you make an annual spend commitment at the platform level and gain access to any capability in any quantity at any time. 
+        You pay only for what you use — no monthly minimums, no per-user fees, and no surprise surcharges. 
+        Committed and on-demand usage are billed at the same rate.
+        Prices shown are from your custom rate card.
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="selection-info" id="selection-info">
+        Select at least one capability to continue
+      </div>
+      <button class="btn btn-primary" id="btn-continue" disabled onclick="goToCalculator()">
+        Continue to calculator
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
+  </footer>
+
+  <script>
+    // ---- State ----
+    const selectedCapabilities = new Set(
+      JSON.parse(sessionStorage.getItem('selectedCapabilities') || '[]')
+    );
+
+    // ---- Init ----
+    document.addEventListener('DOMContentLoaded', () => {
+      // Restore selections
+      selectedCapabilities.forEach(cap => {
+        const card = document.querySelector(`[data-capability="${cap}"]`);
+        if (card) card.classList.add('selected');
+      });
+      updateUI();
+    });
+
+    // ---- Toggle ----
+    function toggleCapability(card) {
+      const cap = card.dataset.capability;
+      if (selectedCapabilities.has(cap)) {
+        selectedCapabilities.delete(cap);
+        card.classList.remove('selected');
+      } else {
+        selectedCapabilities.add(cap);
+        card.classList.add('selected');
+      }
+      sessionStorage.setItem('selectedCapabilities', JSON.stringify([...selectedCapabilities]));
+      updateUI();
+    }
+
+    // ---- Update UI ----
+    function updateUI() {
+      const count = selectedCapabilities.size;
+      const info = document.getElementById('selection-info');
+      const btn = document.getElementById('btn-continue');
+
+      if (count === 0) {
+        info.innerHTML = 'Select at least one capability to continue';
+        btn.disabled = true;
+      } else {
+        const names = [...selectedCapabilities].map(c => {
+          const card = document.querySelector(`[data-capability="${c}"]`);
+          return card ? card.querySelector('.card-title').textContent : c;
+        });
+        info.innerHTML = `<strong>${count}</strong> capability${count > 1 ? 'ies' : ''} selected: ${names.join(', ')}`;
+        btn.disabled = false;
+      }
+    }
+
+    // ---- Navigate ----
+    function goToCalculator() {
+      if (selectedCapabilities.size > 0) {
+        window.location.href = 'calculator.html';
+      }
+    }
+  </script>
+</body>
+</html>

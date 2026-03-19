@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPS Cost Calculator — Other Capabilities Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">D</div>
+        <div class="logo-text">DPS <span>Cost Calculator</span></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Capabilities</a>
+        <a href="calculator.html">Calculator</a>
+        <a href="logs.html">Logs</a>
+        <a href="other.html" class="active">Other</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" style="padding: 2.5rem 2rem 4rem;">
+    <div class="hero-content">
+      <h1>
+        Other capabilities<br>
+        <span class="gradient-text">cost calculator</span>
+      </h1>
+      <p>Enter your expected usage. The calculator will estimate your yearly DPS cost for the selected capabilities.</p>
+      <div class="steps-indicator">
+        <div class="step-item completed">
+          <div class="step-number">&#10003;</div>
+          <span>Select capabilities</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item active">
+          <div class="step-number">2</div>
+          <span>Enter usage data</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <span>View estimate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="calculator-sections" id="calculator-sections"></div>
+
+    <!-- Total Summary -->
+    <div class="total-summary" id="total-summary" style="margin-top: 2rem;">
+      <div class="total-summary-title">Yearly cost estimate — Other Capabilities</div>
+      <div class="total-breakdown" id="total-breakdown"></div>
+      <div class="total-divider"></div>
+      <div class="total-grand">
+        <div class="total-grand-label">Total yearly cost</div>
+        <div>
+          <div class="total-grand-value" id="total-grand-value">€0.00</div>
+          <div class="total-monthly" id="total-monthly">≈ €0.00 / month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar" style="margin-top: 1rem;">
+      <a href="other.html" class="btn btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+        </svg>
+        Back to capabilities
+      </a>
+      <button class="btn btn-primary" onclick="exportSummary()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Copy summary
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
+  </footer>
+
+  <script>
+    const RATE_CARD = {
+      AUTOMATIONS: { name: 'Automation Workflow', price: 0.001430, unit: 'per workflow execution' },
+      BUSINESS_EVENTS_INGEST: { name: 'Events - Ingest & Process', price: 0.094800, unit: 'per GiB ingested' },
+      BUSINESS_EVENTS_ANALYZE: { name: 'Events - Query', price: 0.003500, unit: 'per GiB scanned' },
+      BUSINESS_EVENTS_RETAIN: { name: 'Events - Retain', price: 0.000332, unit: 'per GiB-day retained' },
+      TRACE_INGEST: { name: 'Traces - Ingest & Process', price: 0.094800, unit: 'per GiB ingested' },
+      TRACE_QUERY: { name: 'Traces - Query', price: 0.001657, unit: 'per GiB scanned' },
+      TRACE_RETAIN: { name: 'Traces - Retain', price: 0.000332, unit: 'per GiB-day retained' },
+      TRACES: { name: 'Custom Traces Classic', price: 0.00000067, unit: 'per span' },
+      RUNTIME_VULNERABILITY_ANALYTICS: { name: 'Runtime Vulnerability Analytics', price: 0.000970, unit: 'per memory-GiB-hour' },
+      RUNTIME_APPLICATION_PROTECTION: { name: 'Runtime Application Protection', price: 0.000970, unit: 'per memory-GiB-hour' },
+      SECURITY_POSTURE_MANAGEMENT: { name: 'Security Posture Management', price: 0.003010, unit: 'per host-hour' },
+      CODE_MONITORING: { name: 'Code Monitoring', price: 0.002370, unit: 'per container-hour' },
+      KUBERNETES_OPERATIONS: { name: 'Kubernetes Platform Monitoring', price: 0.000950, unit: 'per pod-hour' },
+      COMPUTE: { name: 'AppEngine Functions - Small', price: 0.000474, unit: 'per function invocation' },
+      MAINFRAME_MONITORING: { name: 'Mainframe Monitoring', price: 0.047400, unit: 'per host-hour' },
+      SYNTHETIC_MONITORING_THIRD_PARTY: { name: 'Third-Party Synthetic API', price: 0.000410, unit: 'per request' },
+      USER_SESSION_REPLAYS: { name: 'RUM with Session Replay', price: 0.001830, unit: 'per session with replay' },
+      USER_SESSION_PROPERTIES: { name: 'RUM Property', price: 0.000040, unit: 'per property' },
+      EVENTS: { name: 'Custom Events Classic', price: 0.000001, unit: 'per event' },
+      METRICS: { name: 'Custom Metrics Classic', price: 0.000001, unit: 'per metric' },
+      SERVERLESS: { name: 'Serverless Functions Classic', price: 0.000002, unit: 'per invocation' }
+    };
+
+    // Helper to build per-unit-per-day fields (most common pattern)
+    function dailyFields(prefix, unitLabel, unitHint, defaultDays) {
+      return [
+        { id: `${prefix}_count`, label: `${unitLabel} per day`, hint: unitHint, placeholder: 'e.g. 1000', defaultValue: '' },
+        { id: `${prefix}_days`, label: 'Days per year', hint: 'Number of operational days per year', placeholder: 'e.g. 365', defaultValue: defaultDays || '365' }
+      ];
+    }
+
+    function dailyCalc(prefix, rateKey) {
+      return (v) => {
+        const count = parseFloat(v[`${prefix}_count`]) || 0;
+        const days = parseFloat(v[`${prefix}_days`]) || 0;
+        return count * days * RATE_CARD[rateKey].price;
+      };
+    }
+
+    // Host-hour fields: hosts × hours/day × days/year
+    function hostHourFields(prefix) {
+      return [
+        { id: `${prefix}_hosts`, label: 'Number of hosts', hint: 'Total monitored hosts', placeholder: 'e.g. 10', defaultValue: '' },
+        { id: `${prefix}_hours`, label: 'Hours per day', hint: 'Average hours per day', placeholder: 'e.g. 24', defaultValue: '24' },
+        { id: `${prefix}_days`, label: 'Days per year', hint: 'Operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+      ];
+    }
+
+    function hostHourCalc(prefix, rateKey) {
+      return (v) => {
+        const hosts = parseFloat(v[`${prefix}_hosts`]) || 0;
+        const hours = parseFloat(v[`${prefix}_hours`]) || 0;
+        const days = parseFloat(v[`${prefix}_days`]) || 0;
+        return hosts * hours * days * RATE_CARD[rateKey].price;
+      };
+    }
+
+    // Memory-GiB-hour fields: hosts × memory × hours/day × days/year
+    function memGibFields(prefix) {
+      return [
+        { id: `${prefix}_hosts`, label: 'Number of hosts', hint: 'Total monitored hosts', placeholder: 'e.g. 10', defaultValue: '' },
+        { id: `${prefix}_mem`, label: 'Avg memory per host (GiB)', hint: 'Average RAM in GiB', placeholder: 'e.g. 8', defaultValue: '' },
+        { id: `${prefix}_hours`, label: 'Hours per day', hint: 'Average hours per day', placeholder: 'e.g. 24', defaultValue: '24' },
+        { id: `${prefix}_days`, label: 'Days per year', hint: 'Operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+      ];
+    }
+
+    function memGibCalc(prefix, rateKey) {
+      return (v) => {
+        const hosts = parseFloat(v[`${prefix}_hosts`]) || 0;
+        const mem = parseFloat(v[`${prefix}_mem`]) || 0;
+        const hours = parseFloat(v[`${prefix}_hours`]) || 0;
+        const days = parseFloat(v[`${prefix}_days`]) || 0;
+        return hosts * mem * hours * days * RATE_CARD[rateKey].price;
+      };
+    }
+
+    // Retain fields: GiB stored × retention days
+    function retainFields(prefix) {
+      return [
+        { id: `${prefix}_gib`, label: 'GiB stored (avg)', hint: 'Average retained volume in GiB', placeholder: 'e.g. 500', defaultValue: '' },
+        { id: `${prefix}_ret`, label: 'Retention days', hint: 'Number of days data is retained', placeholder: 'e.g. 35', defaultValue: '35' }
+      ];
+    }
+
+    function retainCalc(prefix, rateKey) {
+      return (v) => {
+        const gib = parseFloat(v[`${prefix}_gib`]) || 0;
+        const ret = parseFloat(v[`${prefix}_ret`]) || 0;
+        return gib * ret * RATE_CARD[rateKey].price;
+      };
+    }
+
+    const defaultSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>';
+
+    const CAPABILITY_FORMS = {
+      AUTOMATIONS: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('aut', 'Workflow executions', 'Total workflow executions per day'),
+        calculate: dailyCalc('aut', 'AUTOMATIONS'),
+        formula: 'executions/day × days/year × €0.001430'
+      },
+      BUSINESS_EVENTS_INGEST: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('bei', 'GiB ingested', 'GiB of events ingested per day'),
+        calculate: dailyCalc('bei', 'BUSINESS_EVENTS_INGEST'),
+        formula: 'GiB/day × days/year × €0.094800'
+      },
+      BUSINESS_EVENTS_ANALYZE: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('bea', 'GiB scanned', 'GiB of events scanned per day'),
+        calculate: dailyCalc('bea', 'BUSINESS_EVENTS_ANALYZE'),
+        formula: 'GiB scanned/day × days/year × €0.003500'
+      },
+      BUSINESS_EVENTS_RETAIN: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: retainFields('ber'),
+        calculate: retainCalc('ber', 'BUSINESS_EVENTS_RETAIN'),
+        formula: 'GiB stored × retention days × €0.000332'
+      },
+      TRACE_INGEST: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('tri', 'GiB ingested', 'GiB of traces ingested per day'),
+        calculate: dailyCalc('tri', 'TRACE_INGEST'),
+        formula: 'GiB/day × days/year × €0.094800'
+      },
+      TRACE_QUERY: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('trq', 'GiB scanned', 'GiB of traces scanned per day'),
+        calculate: dailyCalc('trq', 'TRACE_QUERY'),
+        formula: 'GiB scanned/day × days/year × €0.001657'
+      },
+      TRACE_RETAIN: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: retainFields('trr'),
+        calculate: retainCalc('trr', 'TRACE_RETAIN'),
+        formula: 'GiB stored × retention days × €0.000332'
+      },
+      TRACES: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('trc', 'Spans', 'Number of spans per day'),
+        calculate: dailyCalc('trc', 'TRACES'),
+        formula: 'spans/day × days/year × €0.00000067'
+      },
+      RUNTIME_VULNERABILITY_ANALYTICS: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: memGibFields('rva'),
+        calculate: memGibCalc('rva', 'RUNTIME_VULNERABILITY_ANALYTICS'),
+        formula: 'hosts × GiB × hours/day × days/year × €0.000970'
+      },
+      RUNTIME_APPLICATION_PROTECTION: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: memGibFields('rap'),
+        calculate: memGibCalc('rap', 'RUNTIME_APPLICATION_PROTECTION'),
+        formula: 'hosts × GiB × hours/day × days/year × €0.000970'
+      },
+      SECURITY_POSTURE_MANAGEMENT: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: hostHourFields('spm'),
+        calculate: hostHourCalc('spm', 'SECURITY_POSTURE_MANAGEMENT'),
+        formula: 'hosts × hours/day × days/year × €0.003010'
+      },
+      CODE_MONITORING: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: [
+          { id: 'cm_containers', label: 'Number of containers', hint: 'Total monitored containers', placeholder: 'e.g. 20', defaultValue: '' },
+          { id: 'cm_hours', label: 'Hours per day', hint: 'Average hours per day', placeholder: 'e.g. 24', defaultValue: '24' },
+          { id: 'cm_days', label: 'Days per year', hint: 'Operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+        ],
+        calculate: (v) => {
+          const c = parseFloat(v.cm_containers) || 0;
+          const h = parseFloat(v.cm_hours) || 0;
+          const d = parseFloat(v.cm_days) || 0;
+          return c * h * d * RATE_CARD.CODE_MONITORING.price;
+        },
+        formula: 'containers × hours/day × days/year × €0.002370'
+      },
+      KUBERNETES_OPERATIONS: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: [
+          { id: 'k8s_pods', label: 'Number of pods', hint: 'Total monitored pods', placeholder: 'e.g. 100', defaultValue: '' },
+          { id: 'k8s_hours', label: 'Hours per day', hint: 'Average hours per day', placeholder: 'e.g. 24', defaultValue: '24' },
+          { id: 'k8s_days', label: 'Days per year', hint: 'Operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+        ],
+        calculate: (v) => {
+          const p = parseFloat(v.k8s_pods) || 0;
+          const h = parseFloat(v.k8s_hours) || 0;
+          const d = parseFloat(v.k8s_days) || 0;
+          return p * h * d * RATE_CARD.KUBERNETES_OPERATIONS.price;
+        },
+        formula: 'pods × hours/day × days/year × €0.000950'
+      },
+      COMPUTE: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('cmp', 'Invocations', 'Function invocations per day'),
+        calculate: dailyCalc('cmp', 'COMPUTE'),
+        formula: 'invocations/day × days/year × €0.000474'
+      },
+      MAINFRAME_MONITORING: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: hostHourFields('mf'),
+        calculate: hostHourCalc('mf', 'MAINFRAME_MONITORING'),
+        formula: 'hosts × hours/day × days/year × €0.047400'
+      },
+      SYNTHETIC_MONITORING_THIRD_PARTY: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('stp', 'Requests', 'Third-party synthetic requests per day'),
+        calculate: dailyCalc('stp', 'SYNTHETIC_MONITORING_THIRD_PARTY'),
+        formula: 'requests/day × days/year × €0.000410'
+      },
+      USER_SESSION_REPLAYS: {
+        icon: 'rum', iconSvg: defaultSvg,
+        fields: dailyFields('usr', 'Sessions with replay', 'Sessions with replay capture per day'),
+        calculate: dailyCalc('usr', 'USER_SESSION_REPLAYS'),
+        formula: 'sessions/day × days/year × €0.001830'
+      },
+      USER_SESSION_PROPERTIES: {
+        icon: 'rum', iconSvg: defaultSvg,
+        fields: dailyFields('usp', 'Properties', 'RUM properties captured per day'),
+        calculate: dailyCalc('usp', 'USER_SESSION_PROPERTIES'),
+        formula: 'properties/day × days/year × €0.000040'
+      },
+      EVENTS: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('evt', 'Events', 'Custom events per day'),
+        calculate: dailyCalc('evt', 'EVENTS'),
+        formula: 'events/day × days/year × €0.000001'
+      },
+      METRICS: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('met', 'Metrics', 'Custom metrics per day'),
+        calculate: dailyCalc('met', 'METRICS'),
+        formula: 'metrics/day × days/year × €0.000001'
+      },
+      SERVERLESS: {
+        icon: 'other', iconSvg: defaultSvg,
+        fields: dailyFields('svl', 'Invocations', 'Serverless invocations per day'),
+        calculate: dailyCalc('svl', 'SERVERLESS'),
+        formula: 'invocations/day × days/year × €0.000002'
+      }
+    };
+
+    const STORAGE_KEY = 'selectedOtherCapabilities';
+    let selectedCapabilities = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]');
+
+    if (selectedCapabilities.length === 0) {
+      window.location.href = 'other.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('calculator-sections');
+      selectedCapabilities.forEach(capKey => {
+        const config = CAPABILITY_FORMS[capKey];
+        const rate = RATE_CARD[capKey];
+        if (!config || !rate) return;
+
+        const section = document.createElement('div');
+        section.className = 'calc-section fade-in';
+        section.id = `section-${capKey}`;
+        section.innerHTML = `
+          <div class="calc-section-header">
+            <div class="calc-section-icon ${config.icon}">${config.iconSvg}</div>
+            <div>
+              <div class="calc-section-title">${rate.name}</div>
+              <div class="calc-section-subtitle">${rate.unit} &mdash; €${rate.price.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')}</div>
+            </div>
+          </div>
+          <div class="calc-section-body">
+            <div class="form-grid">
+              ${config.fields.map(f => `
+                <div class="form-group">
+                  <label class="form-label" for="${f.id}">${f.label}</label>
+                  <input class="form-input" type="number" id="${f.id}" placeholder="${f.placeholder}" value="${f.defaultValue}" min="0" step="any" oninput="recalculate()">
+                  <span class="form-hint">${f.hint}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="info-box" style="margin-top: 1.25rem;">
+              <div class="info-box-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="info-box-text"><strong>Formula:</strong> ${config.formula}</div>
+            </div>
+          </div>
+          <div class="section-cost">
+            <span class="section-cost-label">Yearly cost:</span>
+            <span class="section-cost-value" id="cost-${capKey}">€0.00</span>
+          </div>
+        `;
+        container.appendChild(section);
+      });
+      recalculate();
+    });
+
+    function recalculate() {
+      let totalYearly = 0;
+      const breakdownEl = document.getElementById('total-breakdown');
+      breakdownEl.innerHTML = '';
+
+      selectedCapabilities.forEach(capKey => {
+        const config = CAPABILITY_FORMS[capKey];
+        const rate = RATE_CARD[capKey];
+        if (!config || !rate) return;
+        const values = {};
+        config.fields.forEach(f => { values[f.id] = document.getElementById(f.id)?.value || '0'; });
+        const cost = config.calculate(values);
+        totalYearly += cost;
+        const costEl = document.getElementById(`cost-${capKey}`);
+        if (costEl) costEl.textContent = formatCurrency(cost);
+        const row = document.createElement('div');
+        row.className = 'total-row';
+        row.innerHTML = `<span class="total-row-label">${rate.name}</span><span class="total-row-value">${formatCurrency(cost)}</span>`;
+        breakdownEl.appendChild(row);
+      });
+
+      document.getElementById('total-grand-value').textContent = formatCurrency(totalYearly);
+      document.getElementById('total-monthly').textContent = `≈ ${formatCurrency(totalYearly / 12)} / month`;
+    }
+
+    function formatCurrency(value) {
+      return '€' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function exportSummary() {
+      let summary = '=== DPS Yearly Cost Estimate — Other Capabilities ===\n\n';
+      let total = 0;
+      selectedCapabilities.forEach(capKey => {
+        const config = CAPABILITY_FORMS[capKey];
+        const rate = RATE_CARD[capKey];
+        if (!config || !rate) return;
+        summary += `--- ${rate.name} ---\n`;
+        summary += `Rate: €${rate.price} ${rate.unit}\n`;
+        const values = {};
+        config.fields.forEach(f => {
+          const val = document.getElementById(f.id)?.value || '0';
+          values[f.id] = val;
+          summary += `${f.label}: ${val}\n`;
+        });
+        const cost = config.calculate(values);
+        total += cost;
+        summary += `Yearly cost: ${formatCurrency(cost)}\n\n`;
+      });
+      summary += `=== TOTAL ===\nYearly: ${formatCurrency(total)}\nMonthly: ${formatCurrency(total / 12)}\n`;
+
+      navigator.clipboard.writeText(summary).then(() => {
+        const btn = document.querySelector('.btn-primary');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Copied!';
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
+      }).catch(() => { prompt('Copy this summary:', summary); });
+    }
+  </script>
+</body>
+</html>
