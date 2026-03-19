@@ -15,7 +15,6 @@ Dynatrace Platform Subscription (DPS) cost estimation calculator. Calculate your
 - Python 3.8 or later (for running the local development server)
 - A modern web browser
 
-   ```
 
 ### Available Pages
 
