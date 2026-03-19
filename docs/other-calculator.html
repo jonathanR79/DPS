@@ -95,29 +95,59 @@
   </footer>
 
   <script>
-    const RATE_CARD = {
-      AUTOMATIONS: { name: 'Automation Workflow', price: 0.001430, unit: 'per workflow execution' },
-      BUSINESS_EVENTS_INGEST: { name: 'Events - Ingest & Process', price: 0.094800, unit: 'per GiB ingested' },
-      BUSINESS_EVENTS_ANALYZE: { name: 'Events - Query', price: 0.003500, unit: 'per GiB scanned' },
-      BUSINESS_EVENTS_RETAIN: { name: 'Events - Retain', price: 0.000332, unit: 'per GiB-day retained' },
-      TRACE_INGEST: { name: 'Traces - Ingest & Process', price: 0.094800, unit: 'per GiB ingested' },
-      TRACE_QUERY: { name: 'Traces - Query', price: 0.001657, unit: 'per GiB scanned' },
-      TRACE_RETAIN: { name: 'Traces - Retain', price: 0.000332, unit: 'per GiB-day retained' },
-      TRACES: { name: 'Custom Traces Classic', price: 0.00000067, unit: 'per span' },
-      RUNTIME_VULNERABILITY_ANALYTICS: { name: 'Runtime Vulnerability Analytics', price: 0.000970, unit: 'per memory-GiB-hour' },
-      RUNTIME_APPLICATION_PROTECTION: { name: 'Runtime Application Protection', price: 0.000970, unit: 'per memory-GiB-hour' },
-      SECURITY_POSTURE_MANAGEMENT: { name: 'Security Posture Management', price: 0.003010, unit: 'per host-hour' },
-      CODE_MONITORING: { name: 'Code Monitoring', price: 0.002370, unit: 'per container-hour' },
-      KUBERNETES_OPERATIONS: { name: 'Kubernetes Platform Monitoring', price: 0.000950, unit: 'per pod-hour' },
-      COMPUTE: { name: 'AppEngine Functions - Small', price: 0.000474, unit: 'per function invocation' },
-      MAINFRAME_MONITORING: { name: 'Mainframe Monitoring', price: 0.047400, unit: 'per host-hour' },
-      SYNTHETIC_MONITORING_THIRD_PARTY: { name: 'Third-Party Synthetic API', price: 0.000410, unit: 'per request' },
-      USER_SESSION_REPLAYS: { name: 'RUM with Session Replay', price: 0.001830, unit: 'per session with replay' },
-      USER_SESSION_PROPERTIES: { name: 'RUM Property', price: 0.000040, unit: 'per property' },
-      EVENTS: { name: 'Custom Events Classic', price: 0.000001, unit: 'per event' },
-      METRICS: { name: 'Custom Metrics Classic', price: 0.000001, unit: 'per metric' },
-      SERVERLESS: { name: 'Serverless Functions Classic', price: 0.000002, unit: 'per invocation' }
+    // ---- Rate Card (fetched from ratecard.json) ----
+    let RATE_CARD = {};
+    
+    // Define units for each capability (mapped from ratecard.json)
+    const CAPABILITY_UNITS = {
+      AUTOMATIONS: 'per workflow execution',
+      BUSINESS_EVENTS_INGEST: 'per GiB ingested',
+      BUSINESS_EVENTS_ANALYZE: 'per GiB scanned',
+      BUSINESS_EVENTS_RETAIN: 'per GiB-day retained',
+      TRACE_INGEST: 'per GiB ingested',
+      TRACE_QUERY: 'per GiB scanned',
+      TRACE_RETAIN: 'per GiB-day retained',
+      TRACES: 'per span',
+      RUNTIME_VULNERABILITY_ANALYTICS: 'per memory-GiB-hour',
+      RUNTIME_APPLICATION_PROTECTION: 'per memory-GiB-hour',
+      SECURITY_POSTURE_MANAGEMENT: 'per host-hour',
+      CODE_MONITORING: 'per container-hour',
+      KUBERNETES_OPERATIONS: 'per pod-hour',
+      COMPUTE: 'per function invocation',
+      MAINFRAME_MONITORING: 'per host-hour',
+      SYNTHETIC_MONITORING_THIRD_PARTY: 'per request',
+      USER_SESSION_REPLAYS: 'per session with replay',
+      USER_SESSION_PROPERTIES: 'per property',
+      EVENTS: 'per event',
+      METRICS: 'per metric',
+      SERVERLESS: 'per invocation'
     };
+    
+    // Load rate card from JSON
+    async function loadRateCard() {
+      try {
+        const response = await fetch('ratecard.json');
+        const rateCardArray = await response.json();
+        
+        // Convert array to object keyed by capability
+        RATE_CARD = {};
+        rateCardArray.forEach(item => {
+          if (CAPABILITY_UNITS[item.key]) {
+            RATE_CARD[item.key] = {
+              name: item.name,
+              price: parseFloat(item.price),
+              unit: CAPABILITY_UNITS[item.key]
+            };
+          }
+        });
+        
+        // Initialize UI after rate card is loaded
+        initializeCalculator();
+      } catch (error) {
+        console.error('Failed to load rate card:', error);
+        alert('Error loading rate card. Please refresh the page.');
+      }
+    }
 
     // Helper to build per-unit-per-day fields (most common pattern)
     function dailyFields(prefix, unitLabel, unitHint, defaultDays) {
@@ -132,6 +162,14 @@
         const count = parseFloat(v[`${prefix}_count`]) || 0;
         const days = parseFloat(v[`${prefix}_days`]) || 0;
         return count * days * RATE_CARD[rateKey].price;
+      };
+    }
+
+    function dailyFormula(rateKey) {
+      return () => {
+        const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
+        const unit = RATE_CARD[rateKey]?.unit || 'unit';
+        return `${unit.split(' ')[0]}/day × days/year × €${price}`;
       };
     }
 
@@ -150,6 +188,13 @@
         const hours = parseFloat(v[`${prefix}_hours`]) || 0;
         const days = parseFloat(v[`${prefix}_days`]) || 0;
         return hosts * hours * days * RATE_CARD[rateKey].price;
+      };
+    }
+
+    function hostHourFormula(rateKey) {
+      return () => {
+        const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
+        return `hosts × hours/day × days/year × €${price}`;
       };
     }
 
@@ -173,6 +218,13 @@
       };
     }
 
+    function memGibFormula(rateKey) {
+      return () => {
+        const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
+        return `hosts × GiB × hours/day × days/year × €${price}`;
+      };
+    }
+
     // Retain fields: GiB stored × retention days
     function retainFields(prefix) {
       return [
@@ -189,6 +241,13 @@
       };
     }
 
+    function retainFormula(rateKey) {
+      return () => {
+        const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
+        return `GiB stored × retention days × €${price}`;
+      };
+    }
+
     const defaultSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>';
 
     const CAPABILITY_FORMS = {
@@ -196,67 +255,67 @@
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('aut', 'Workflow executions', 'Total workflow executions per day'),
         calculate: dailyCalc('aut', 'AUTOMATIONS'),
-        formula: 'executions/day × days/year × €0.001430'
+        getFormula: dailyFormula('AUTOMATIONS')
       },
       BUSINESS_EVENTS_INGEST: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('bei', 'GiB ingested', 'GiB of events ingested per day'),
         calculate: dailyCalc('bei', 'BUSINESS_EVENTS_INGEST'),
-        formula: 'GiB/day × days/year × €0.094800'
+        getFormula: dailyFormula('BUSINESS_EVENTS_INGEST')
       },
       BUSINESS_EVENTS_ANALYZE: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('bea', 'GiB scanned', 'GiB of events scanned per day'),
         calculate: dailyCalc('bea', 'BUSINESS_EVENTS_ANALYZE'),
-        formula: 'GiB scanned/day × days/year × €0.003500'
+        getFormula: dailyFormula('BUSINESS_EVENTS_ANALYZE')
       },
       BUSINESS_EVENTS_RETAIN: {
         icon: 'other', iconSvg: defaultSvg,
         fields: retainFields('ber'),
         calculate: retainCalc('ber', 'BUSINESS_EVENTS_RETAIN'),
-        formula: 'GiB stored × retention days × €0.000332'
+        getFormula: retainFormula('BUSINESS_EVENTS_RETAIN')
       },
       TRACE_INGEST: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('tri', 'GiB ingested', 'GiB of traces ingested per day'),
         calculate: dailyCalc('tri', 'TRACE_INGEST'),
-        formula: 'GiB/day × days/year × €0.094800'
+        getFormula: dailyFormula('TRACE_INGEST')
       },
       TRACE_QUERY: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('trq', 'GiB scanned', 'GiB of traces scanned per day'),
         calculate: dailyCalc('trq', 'TRACE_QUERY'),
-        formula: 'GiB scanned/day × days/year × €0.001657'
+        getFormula: dailyFormula('TRACE_QUERY')
       },
       TRACE_RETAIN: {
         icon: 'other', iconSvg: defaultSvg,
         fields: retainFields('trr'),
         calculate: retainCalc('trr', 'TRACE_RETAIN'),
-        formula: 'GiB stored × retention days × €0.000332'
+        getFormula: retainFormula('TRACE_RETAIN')
       },
       TRACES: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('trc', 'Spans', 'Number of spans per day'),
         calculate: dailyCalc('trc', 'TRACES'),
-        formula: 'spans/day × days/year × €0.00000067'
+        getFormula: dailyFormula('TRACES')
       },
       RUNTIME_VULNERABILITY_ANALYTICS: {
         icon: 'other', iconSvg: defaultSvg,
         fields: memGibFields('rva'),
         calculate: memGibCalc('rva', 'RUNTIME_VULNERABILITY_ANALYTICS'),
-        formula: 'hosts × GiB × hours/day × days/year × €0.000970'
+        getFormula: memGibFormula('RUNTIME_VULNERABILITY_ANALYTICS')
       },
       RUNTIME_APPLICATION_PROTECTION: {
         icon: 'other', iconSvg: defaultSvg,
         fields: memGibFields('rap'),
         calculate: memGibCalc('rap', 'RUNTIME_APPLICATION_PROTECTION'),
-        formula: 'hosts × GiB × hours/day × days/year × €0.000970'
+        getFormula: memGibFormula('RUNTIME_APPLICATION_PROTECTION')
       },
       SECURITY_POSTURE_MANAGEMENT: {
         icon: 'other', iconSvg: defaultSvg,
         fields: hostHourFields('spm'),
         calculate: hostHourCalc('spm', 'SECURITY_POSTURE_MANAGEMENT'),
-        formula: 'hosts × hours/day × days/year × €0.003010'
+        getFormula: hostHourFormula('SECURITY_POSTURE_MANAGEMENT')
       },
       CODE_MONITORING: {
         icon: 'other', iconSvg: defaultSvg,
@@ -271,7 +330,7 @@
           const d = parseFloat(v.cm_days) || 0;
           return c * h * d * RATE_CARD.CODE_MONITORING.price;
         },
-        formula: 'containers × hours/day × days/year × €0.002370'
+        getFormula: () => `containers × hours/day × days/year × €${RATE_CARD.CODE_MONITORING?.price.toFixed(6) || '0.000000'}`
       },
       KUBERNETES_OPERATIONS: {
         icon: 'other', iconSvg: defaultSvg,
@@ -286,55 +345,55 @@
           const d = parseFloat(v.k8s_days) || 0;
           return p * h * d * RATE_CARD.KUBERNETES_OPERATIONS.price;
         },
-        formula: 'pods × hours/day × days/year × €0.000950'
+        getFormula: () => `pods × hours/day × days/year × €${RATE_CARD.KUBERNETES_OPERATIONS?.price.toFixed(6) || '0.000000'}`
       },
       COMPUTE: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('cmp', 'Invocations', 'Function invocations per day'),
         calculate: dailyCalc('cmp', 'COMPUTE'),
-        formula: 'invocations/day × days/year × €0.000474'
+        getFormula: dailyFormula('COMPUTE')
       },
       MAINFRAME_MONITORING: {
         icon: 'other', iconSvg: defaultSvg,
         fields: hostHourFields('mf'),
         calculate: hostHourCalc('mf', 'MAINFRAME_MONITORING'),
-        formula: 'hosts × hours/day × days/year × €0.047400'
+        getFormula: hostHourFormula('MAINFRAME_MONITORING')
       },
       SYNTHETIC_MONITORING_THIRD_PARTY: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('stp', 'Requests', 'Third-party synthetic requests per day'),
         calculate: dailyCalc('stp', 'SYNTHETIC_MONITORING_THIRD_PARTY'),
-        formula: 'requests/day × days/year × €0.000410'
+        getFormula: dailyFormula('SYNTHETIC_MONITORING_THIRD_PARTY')
       },
       USER_SESSION_REPLAYS: {
         icon: 'rum', iconSvg: defaultSvg,
         fields: dailyFields('usr', 'Sessions with replay', 'Sessions with replay capture per day'),
         calculate: dailyCalc('usr', 'USER_SESSION_REPLAYS'),
-        formula: 'sessions/day × days/year × €0.001830'
+        getFormula: dailyFormula('USER_SESSION_REPLAYS')
       },
       USER_SESSION_PROPERTIES: {
         icon: 'rum', iconSvg: defaultSvg,
         fields: dailyFields('usp', 'Properties', 'RUM properties captured per day'),
         calculate: dailyCalc('usp', 'USER_SESSION_PROPERTIES'),
-        formula: 'properties/day × days/year × €0.000040'
+        getFormula: dailyFormula('USER_SESSION_PROPERTIES')
       },
       EVENTS: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('evt', 'Events', 'Custom events per day'),
         calculate: dailyCalc('evt', 'EVENTS'),
-        formula: 'events/day × days/year × €0.000001'
+        getFormula: dailyFormula('EVENTS')
       },
       METRICS: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('met', 'Metrics', 'Custom metrics per day'),
         calculate: dailyCalc('met', 'METRICS'),
-        formula: 'metrics/day × days/year × €0.000001'
+        getFormula: dailyFormula('METRICS')
       },
       SERVERLESS: {
         icon: 'other', iconSvg: defaultSvg,
         fields: dailyFields('svl', 'Invocations', 'Serverless invocations per day'),
         calculate: dailyCalc('svl', 'SERVERLESS'),
-        formula: 'invocations/day × days/year × €0.000002'
+        getFormula: dailyFormula('SERVERLESS')
       }
     };
 
@@ -345,7 +404,8 @@
       window.location.href = 'other.html';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // ---- Build UI ----
+    function initializeCalculator() {
       const container = document.getElementById('calculator-sections');
       selectedCapabilities.forEach(capKey => {
         const config = CAPABILITY_FORMS[capKey];
@@ -379,7 +439,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                 </svg>
               </div>
-              <div class="info-box-text"><strong>Formula:</strong> ${config.formula}</div>
+              <div class="info-box-text"><strong>Formula:</strong> ${config.getFormula()}</div>
             </div>
           </div>
           <div class="section-cost">
@@ -390,7 +450,9 @@
         container.appendChild(section);
       });
       recalculate();
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRateCard);
 
     function recalculate() {
       let totalYearly = 0;

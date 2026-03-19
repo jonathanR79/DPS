@@ -101,15 +101,44 @@
   </footer>
 
   <script>
-    // ---- Rate Card (from ratecard.json) ----
-    const RATE_CARD = {
-      FULLSTACK_MONITORING: { name: 'Full-Stack Monitoring', price: 0.002350, unit: 'per memory-GiB-hour' },
-      INFRASTRUCTURE_MONITORING: { name: 'Infrastructure Monitoring', price: 0.015810, unit: 'per host-hour' },
-      FOUNDATION_AND_DISCOVERY: { name: 'Foundation & Discovery', price: 0.004740, unit: 'per host-hour' },
-      SYNTHETIC_MONITORING_BROWSER: { name: 'Browser Monitor / Clickpath', price: 0.001830, unit: 'per synthetic action' },
-      SYNTHETIC_MONITORING_HTTP: { name: 'HTTP Monitor', price: 0.000410, unit: 'per synthetic request' },
-      USER_SESSIONS: { name: 'Real User Monitoring', price: 0.000920, unit: 'per session' }
+    // ---- Rate Card (fetched from ratecard.json) ----
+    let RATE_CARD = {};
+    
+    // Define which capabilities to display and their units
+    const CAPABILITY_UNITS = {
+      FULLSTACK_MONITORING: 'per memory-GiB-hour',
+      INFRASTRUCTURE_MONITORING: 'per host-hour',
+      FOUNDATION_AND_DISCOVERY: 'per host-hour',
+      SYNTHETIC_MONITORING_BROWSER: 'per synthetic action',
+      SYNTHETIC_MONITORING_HTTP: 'per synthetic request',
+      USER_SESSIONS: 'per session'
     };
+    
+    // Load rate card from JSON
+    async function loadRateCard() {
+      try {
+        const response = await fetch('ratecard.json');
+        const rateCardArray = await response.json();
+        
+        // Convert array to object keyed by capability
+        RATE_CARD = {};
+        rateCardArray.forEach(item => {
+          if (CAPABILITY_UNITS[item.key]) {
+            RATE_CARD[item.key] = {
+              name: item.name,
+              price: parseFloat(item.price),
+              unit: CAPABILITY_UNITS[item.key]
+            };
+          }
+        });
+        
+        // Initialize UI after rate card is loaded
+        initializeCalculator();
+      } catch (error) {
+        console.error('Failed to load rate card:', error);
+        alert('Error loading rate card. Please refresh the page.');
+      }
+    }
 
     // ---- Capability form configurations ----
     const CAPABILITY_FORMS = {
@@ -130,7 +159,7 @@
           // Cost = hosts × GiB × hours/day × days/year × price/GiB-hour
           return hosts * memory * hours * days * RATE_CARD.FULLSTACK_MONITORING.price;
         },
-        formula: 'hosts × memory (GiB) × hours/day × days/year × €0.002350'
+        getFormula: () => `hosts × memory (GiB) × hours/day × days/year × €${RATE_CARD.FULLSTACK_MONITORING?.price.toFixed(6) || '0.000000'}`
       },
 
       INFRASTRUCTURE_MONITORING: {
@@ -147,7 +176,7 @@
           const days = parseFloat(values.im_days) || 0;
           return hosts * hours * days * RATE_CARD.INFRASTRUCTURE_MONITORING.price;
         },
-        formula: 'hosts × hours/day × days/year × €0.015810'
+        getFormula: () => `hosts × hours/day × days/year × €${RATE_CARD.INFRASTRUCTURE_MONITORING?.price.toFixed(6) || '0.000000'}`
       },
 
       FOUNDATION_AND_DISCOVERY: {
@@ -164,7 +193,7 @@
           const days = parseFloat(values.fd_days) || 0;
           return hosts * hours * days * RATE_CARD.FOUNDATION_AND_DISCOVERY.price;
         },
-        formula: 'hosts × hours/day × days/year × €0.004740'
+        getFormula: () => `hosts × hours/day × days/year × €${RATE_CARD.FOUNDATION_AND_DISCOVERY?.price.toFixed(6) || '0.000000'}`
       },
 
       SYNTHETIC_MONITORING_BROWSER: {
@@ -186,7 +215,7 @@
           // Cost = monitors × actions × executions/day × locations × days × price/action
           return monitors * actions * frequency * locations * days * RATE_CARD.SYNTHETIC_MONITORING_BROWSER.price;
         },
-        formula: 'monitors × actions × executions/day × locations × days/year × €0.001830'
+        getFormula: () => `monitors × actions × executions/day × locations × days/year × €${RATE_CARD.SYNTHETIC_MONITORING_BROWSER?.price.toFixed(6) || '0.000000'}`
       },
 
       SYNTHETIC_MONITORING_HTTP: {
@@ -206,7 +235,7 @@
           // Cost = monitors × executions/day × locations × days × price/request
           return monitors * frequency * locations * days * RATE_CARD.SYNTHETIC_MONITORING_HTTP.price;
         },
-        formula: 'monitors × executions/day × locations × days/year × €0.000410'
+        getFormula: () => `monitors × executions/day × locations × days/year × €${RATE_CARD.SYNTHETIC_MONITORING_HTTP?.price.toFixed(6) || '0.000000'}`
       },
 
       USER_SESSIONS: {
@@ -222,7 +251,7 @@
           // Cost = sessions/day × days/year × price/session
           return sessions * days * RATE_CARD.USER_SESSIONS.price;
         },
-        formula: 'sessions/day × days/year × €0.000920'
+        getFormula: () => `sessions/day × days/year × €${RATE_CARD.USER_SESSIONS?.price.toFixed(6) || '0.000000'}`
       }
     };
 
@@ -235,7 +264,7 @@
     }
 
     // ---- Build UI ----
-    document.addEventListener('DOMContentLoaded', () => {
+    function initializeCalculator() {
       const container = document.getElementById('calculator-sections');
       selectedCapabilities.forEach(capKey => {
         const config = CAPABILITY_FORMS[capKey];
@@ -277,7 +306,7 @@
                 </svg>
               </div>
               <div class="info-box-text">
-                <strong>Formula:</strong> ${config.formula}
+                <strong>Formula:</strong> ${config.getFormula()}
               </div>
             </div>
           </div>
@@ -291,7 +320,9 @@
       });
 
       recalculate();
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRateCard);
 
     // ---- Recalculate ----
     function recalculate() {

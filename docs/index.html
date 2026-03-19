@@ -450,6 +450,36 @@
   </footer>
 
   <script>
+    // ---- Load prices from ratecard.json ----
+    async function loadPrices() {
+      try {
+        const response = await fetch('ratecard.json');
+        const rateCardArray = await response.json();
+        
+        // Create a map of capability keys to prices and units
+        const priceMap = {};
+        rateCardArray.forEach(item => {
+          priceMap[item.key] = {
+            price: item.price,
+            name: item.name
+          };
+        });
+        
+        // Update card prices
+        const cards = document.querySelectorAll('[data-capability]');
+        cards.forEach(card => {
+          const capKey = card.dataset.capability;
+          if (priceMap[capKey]) {
+            const priceEl = card.querySelector('.card-price');
+            const priceUnit = card.querySelector('.card-price-unit');
+            if (priceEl) priceEl.textContent = '€' + parseFloat(priceMap[capKey].price).toFixed(6);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to load prices:', error);
+      }
+    }
+
     // ---- State ----
     const selectedCapabilities = new Set(
       JSON.parse(sessionStorage.getItem('selectedCapabilities') || '[]')
@@ -457,6 +487,7 @@
 
     // ---- Init ----
     document.addEventListener('DOMContentLoaded', () => {
+      loadPrices();
       // Restore selections
       selectedCapabilities.forEach(cap => {
         const card = document.querySelector(`[data-capability="${cap}"]`);

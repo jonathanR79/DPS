@@ -95,12 +95,42 @@
   </footer>
 
   <script>
-    const RATE_CARD = {
-      LOG_MANAGEMENT_INGEST: { name: 'Log Ingest & Process', price: 0.094800, unit: 'per GiB ingested' },
-      LOG_MANAGEMENT_ANALYZE: { name: 'Log Query', price: 0.001657, unit: 'per GiB scanned' },
-      LOG_MANAGEMENT_RETAIN: { name: 'Log Retain', price: 0.000332, unit: 'per GiB-day retained' },
-      LOGS: { name: 'Log Monitoring Classic', price: 0.00000048, unit: 'per log event' }
+    // ---- Rate Card (fetched from ratecard.json) ----
+    let RATE_CARD = {};
+    
+    // Define which capabilities to display and their units
+    const CAPABILITY_UNITS = {
+      LOG_MANAGEMENT_INGEST: 'per GiB ingested',
+      LOG_MANAGEMENT_ANALYZE: 'per GiB scanned',
+      LOG_MANAGEMENT_RETAIN: 'per GiB-day retained',
+      LOGS: 'per log event'
     };
+    
+    // Load rate card from JSON
+    async function loadRateCard() {
+      try {
+        const response = await fetch('ratecard.json');
+        const rateCardArray = await response.json();
+        
+        // Convert array to object keyed by capability
+        RATE_CARD = {};
+        rateCardArray.forEach(item => {
+          if (CAPABILITY_UNITS[item.key]) {
+            RATE_CARD[item.key] = {
+              name: item.name,
+              price: parseFloat(item.price),
+              unit: CAPABILITY_UNITS[item.key]
+            };
+          }
+        });
+        
+        // Initialize UI after rate card is loaded
+        initializeCalculator();
+      } catch (error) {
+        console.error('Failed to load rate card:', error);
+        alert('Error loading rate card. Please refresh the page.');
+      }
+    }
 
     const CAPABILITY_FORMS = {
       LOG_MANAGEMENT_INGEST: {
@@ -115,7 +145,7 @@
           const days = parseFloat(v.li_days) || 0;
           return gib * days * RATE_CARD.LOG_MANAGEMENT_INGEST.price;
         },
-        formula: 'GiB/day × days/year × €0.094800'
+        getFormula: () => `GiB/day × days/year × €${RATE_CARD.LOG_MANAGEMENT_INGEST?.price.toFixed(6) || '0.000000'}`
       },
 
       LOG_MANAGEMENT_ANALYZE: {
@@ -130,7 +160,7 @@
           const days = parseFloat(v.la_days) || 0;
           return gib * days * RATE_CARD.LOG_MANAGEMENT_ANALYZE.price;
         },
-        formula: 'GiB scanned/day × days/year × €0.001657'
+        getFormula: () => `GiB scanned/day × days/year × €${RATE_CARD.LOG_MANAGEMENT_ANALYZE?.price.toFixed(6) || '0.000000'}`
       },
 
       LOG_MANAGEMENT_RETAIN: {
@@ -145,7 +175,7 @@
           const days = parseFloat(v.lr_days) || 0;
           return gib * days * RATE_CARD.LOG_MANAGEMENT_RETAIN.price;
         },
-        formula: 'GiB stored × retention days × €0.000332'
+        getFormula: () => `GiB stored × retention days × €${RATE_CARD.LOG_MANAGEMENT_RETAIN?.price.toFixed(6) || '0.000000'}`
       },
 
       LOGS: {
@@ -160,7 +190,7 @@
           const days = parseFloat(v.lc_days) || 0;
           return events * days * RATE_CARD.LOGS.price;
         },
-        formula: 'events/day × days/year × €0.00000048'
+        getFormula: () => `events/day × days/year × €${RATE_CARD.LOGS?.price.toFixed(8) || '0.00000000'}`
       }
     };
 
@@ -171,7 +201,8 @@
       window.location.href = 'logs.html';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // ---- Build UI ----
+    function initializeCalculator() {
       const container = document.getElementById('calculator-sections');
       selectedCapabilities.forEach(capKey => {
         const config = CAPABILITY_FORMS[capKey];
@@ -205,7 +236,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                 </svg>
               </div>
-              <div class="info-box-text"><strong>Formula:</strong> ${config.formula}</div>
+              <div class="info-box-text"><strong>Formula:</strong> ${config.getFormula()}</div>
             </div>
           </div>
           <div class="section-cost">
@@ -216,7 +247,9 @@
         container.appendChild(section);
       });
       recalculate();
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRateCard);
 
     function recalculate() {
       let totalYearly = 0;
