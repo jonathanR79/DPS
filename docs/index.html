@@ -111,7 +111,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.002350</span>
+          <span class="card-price">$0.01</span>
           <span class="card-price-unit">per memory-GiB-hour</span>
         </div>
       </div>
@@ -154,7 +154,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.015810</span>
+          <span class="card-price">$0.04</span>
           <span class="card-price-unit">per host-hour</span>
         </div>
       </div>
@@ -197,7 +197,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.004740</span>
+          <span class="card-price">$0.01</span>
           <span class="card-price-unit">per host-hour</span>
         </div>
       </div>
@@ -246,7 +246,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.000920</span>
+          <span class="card-price">$0.00225</span>
           <span class="card-price-unit">per session</span>
         </div>
       </div>
@@ -289,7 +289,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.001830</span>
+          <span class="card-price">$0.0045</span>
           <span class="card-price-unit">per synthetic action</span>
         </div>
       </div>
@@ -332,7 +332,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.000410</span>
+          <span class="card-price">$0.001</span>
           <span class="card-price-unit">per synthetic request</span>
         </div>
       </div>
@@ -445,7 +445,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>DPS Cost Calculator &mdash; Prices based on the <a href="https://www.dynatrace.com/pricing/rate-card/" target="_blank">official Dynatrace public rate card</a> (USD). For estimation purposes only.</p>
     <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
   </footer>
 
@@ -472,7 +472,7 @@
           if (priceMap[capKey]) {
             const priceEl = card.querySelector('.card-price');
             const priceUnit = card.querySelector('.card-price-unit');
-            if (priceEl) priceEl.textContent = '€' + parseFloat(priceMap[capKey].price).toFixed(6);
+            if (priceEl) priceEl.textContent = '$' + parseFloat(priceMap[capKey].price).toFixed(6);
           }
         });
       } catch (error) {

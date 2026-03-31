@@ -34,7 +34,8 @@ Dynatrace Platform Subscription (DPS) cost estimation calculator. Calculate your
 
 Prices are centralized in `docs/ratecard.json`. All HTML pages dynamically load prices from this single source, ensuring consistency across the calculator.
 
+The rate card data reflects the **public list prices in USD** from the [official Dynatrace pricing rate card](https://www.dynatrace.com/pricing/rate-card/). These are standard public prices and do not reflect any contractual or negotiated pricing.
+
 ### Updating Prices
 
 To update pricing, simply edit the `docs/ratecard.json` file. All pages will automatically reflect the new prices on next page load.
-THe provided ratecard.json is fictive and provided as a sample for test purpose only.

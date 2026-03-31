@@ -71,8 +71,8 @@
       <div class="total-grand">
         <div class="total-grand-label">Total yearly cost</div>
         <div>
-          <div class="total-grand-value" id="total-grand-value">€0.00</div>
-          <div class="total-monthly" id="total-monthly">≈ €0.00 / month</div>
+          <div class="total-grand-value" id="total-grand-value">$0.00</div>
+          <div class="total-monthly" id="total-monthly">≈ $0.00 / month</div>
         </div>
       </div>
     </div>
@@ -96,7 +96,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>DPS Cost Calculator &mdash; Prices based on the <a href="https://www.dynatrace.com/pricing/rate-card/" target="_blank">official Dynatrace public rate card</a> (USD). For estimation purposes only.</p>
     <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
   </footer>
 
@@ -159,7 +159,7 @@
           // Cost = hosts × GiB × hours/day × days/year × price/GiB-hour
           return hosts * memory * hours * days * RATE_CARD.FULLSTACK_MONITORING.price;
         },
-        getFormula: () => `hosts × memory (GiB) × hours/day × days/year × €${RATE_CARD.FULLSTACK_MONITORING?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `hosts × memory (GiB) × hours/day × days/year × $${RATE_CARD.FULLSTACK_MONITORING?.price.toFixed(6) || '0.000000'}`
       },
 
       INFRASTRUCTURE_MONITORING: {
@@ -176,7 +176,7 @@
           const days = parseFloat(values.im_days) || 0;
           return hosts * hours * days * RATE_CARD.INFRASTRUCTURE_MONITORING.price;
         },
-        getFormula: () => `hosts × hours/day × days/year × €${RATE_CARD.INFRASTRUCTURE_MONITORING?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `hosts × hours/day × days/year × $${RATE_CARD.INFRASTRUCTURE_MONITORING?.price.toFixed(6) || '0.000000'}`
       },
 
       FOUNDATION_AND_DISCOVERY: {
@@ -193,7 +193,7 @@
           const days = parseFloat(values.fd_days) || 0;
           return hosts * hours * days * RATE_CARD.FOUNDATION_AND_DISCOVERY.price;
         },
-        getFormula: () => `hosts × hours/day × days/year × €${RATE_CARD.FOUNDATION_AND_DISCOVERY?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `hosts × hours/day × days/year × $${RATE_CARD.FOUNDATION_AND_DISCOVERY?.price.toFixed(6) || '0.000000'}`
       },
 
       SYNTHETIC_MONITORING_BROWSER: {
@@ -215,7 +215,7 @@
           // Cost = monitors × actions × executions/day × locations × days × price/action
           return monitors * actions * frequency * locations * days * RATE_CARD.SYNTHETIC_MONITORING_BROWSER.price;
         },
-        getFormula: () => `monitors × actions × executions/day × locations × days/year × €${RATE_CARD.SYNTHETIC_MONITORING_BROWSER?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `monitors × actions × executions/day × locations × days/year × $${RATE_CARD.SYNTHETIC_MONITORING_BROWSER?.price.toFixed(6) || '0.000000'}`
       },
 
       SYNTHETIC_MONITORING_HTTP: {
@@ -235,7 +235,7 @@
           // Cost = monitors × executions/day × locations × days × price/request
           return monitors * frequency * locations * days * RATE_CARD.SYNTHETIC_MONITORING_HTTP.price;
         },
-        getFormula: () => `monitors × executions/day × locations × days/year × €${RATE_CARD.SYNTHETIC_MONITORING_HTTP?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `monitors × executions/day × locations × days/year × $${RATE_CARD.SYNTHETIC_MONITORING_HTTP?.price.toFixed(6) || '0.000000'}`
       },
 
       USER_SESSIONS: {
@@ -251,7 +251,7 @@
           // Cost = sessions/day × days/year × price/session
           return sessions * days * RATE_CARD.USER_SESSIONS.price;
         },
-        getFormula: () => `sessions/day × days/year × €${RATE_CARD.USER_SESSIONS?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `sessions/day × days/year × $${RATE_CARD.USER_SESSIONS?.price.toFixed(6) || '0.000000'}`
       }
     };
 
@@ -282,7 +282,7 @@
             </div>
             <div>
               <div class="calc-section-title">${rate.name}</div>
-              <div class="calc-section-subtitle">${rate.unit} &mdash; €${rate.price.toFixed(6)}</div>
+              <div class="calc-section-subtitle">${rate.unit} &mdash; $${rate.price.toFixed(6)}</div>
             </div>
           </div>
           <div class="calc-section-body">
@@ -312,7 +312,7 @@
           </div>
           <div class="section-cost">
             <span class="section-cost-label">Yearly cost:</span>
-            <span class="section-cost-value" id="cost-${capKey}">€0.00</span>
+            <span class="section-cost-value" id="cost-${capKey}">$0.00</span>
           </div>
         `;
 
@@ -373,7 +373,7 @@
 
     // ---- Format ----
     function formatCurrency(value) {
-      return '€' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     // ---- Export ----
@@ -386,7 +386,7 @@
         if (!config || !rate) return;
 
         summary += `--- ${rate.name} ---\n`;
-        summary += `Rate: €${rate.price.toFixed(6)} ${rate.unit}\n`;
+        summary += `Rate: $${rate.price.toFixed(6)} ${rate.unit}\n`;
 
         const values = {};
         config.fields.forEach(f => {
