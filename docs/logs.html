@@ -99,7 +99,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.094800</span>
+          <span class="card-price">$0.20</span>
           <span class="card-price-unit">per GiB ingested</span>
         </div>
       </div>
@@ -134,7 +134,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.001657</span>
+          <span class="card-price">$0.0035</span>
           <span class="card-price-unit">per GiB scanned</span>
         </div>
       </div>
@@ -169,7 +169,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.000332</span>
+          <span class="card-price">$0.0007</span>
           <span class="card-price-unit">per GiB-day retained</span>
         </div>
       </div>
@@ -204,7 +204,7 @@
           </li>
         </ul>
         <div class="card-pricing">
-          <span class="card-price">€0.00000048</span>
+          <span class="card-price">$0.001</span>
           <span class="card-price-unit">per log event</span>
         </div>
       </div>
@@ -235,7 +235,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>DPS Cost Calculator &mdash; Prices based on the <a href="https://www.dynatrace.com/pricing/rate-card/" target="_blank">official Dynatrace public rate card</a> (USD). For estimation purposes only.</p>
     <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
   </footer>
 
@@ -258,7 +258,7 @@
           const capKey = card.dataset.capability;
           if (priceMap[capKey]) {
             const priceEl = card.querySelector('.card-price');
-            if (priceEl) priceEl.textContent = '€' + parseFloat(priceMap[capKey]).toFixed(8).replace(/0+$/, '').replace(/\.$/, '');
+            if (priceEl) priceEl.textContent = '$' + parseFloat(priceMap[capKey]).toFixed(8).replace(/0+$/, '').replace(/\.$/, '');
           }
         });
       } catch (error) {

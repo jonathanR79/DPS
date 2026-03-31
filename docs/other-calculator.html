@@ -65,8 +65,8 @@
       <div class="total-grand">
         <div class="total-grand-label">Total yearly cost</div>
         <div>
-          <div class="total-grand-value" id="total-grand-value">€0.00</div>
-          <div class="total-monthly" id="total-monthly">≈ €0.00 / month</div>
+          <div class="total-grand-value" id="total-grand-value">$0.00</div>
+          <div class="total-monthly" id="total-monthly">≈ $0.00 / month</div>
         </div>
       </div>
     </div>
@@ -90,7 +90,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>DPS Cost Calculator &mdash; Prices based on the <a href="https://www.dynatrace.com/pricing/rate-card/" target="_blank">official Dynatrace public rate card</a> (USD). For estimation purposes only.</p>
     <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
   </footer>
 
@@ -100,7 +100,7 @@
     
     // Define units for each capability (mapped from ratecard.json)
     const CAPABILITY_UNITS = {
-      AUTOMATIONS: 'per workflow execution',
+      AUTOMATIONS: 'per workflow-hour',
       BUSINESS_EVENTS_INGEST: 'per GiB ingested',
       BUSINESS_EVENTS_ANALYZE: 'per GiB scanned',
       BUSINESS_EVENTS_RETAIN: 'per GiB-day retained',
@@ -169,7 +169,7 @@
       return () => {
         const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
         const unit = RATE_CARD[rateKey]?.unit || 'unit';
-        return `${unit.split(' ')[0]}/day × days/year × €${price}`;
+        return `${unit.split(' ')[0]}/day × days/year × $${price}`;
       };
     }
 
@@ -194,7 +194,7 @@
     function hostHourFormula(rateKey) {
       return () => {
         const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
-        return `hosts × hours/day × days/year × €${price}`;
+        return `hosts × hours/day × days/year × $${price}`;
       };
     }
 
@@ -221,7 +221,7 @@
     function memGibFormula(rateKey) {
       return () => {
         const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
-        return `hosts × GiB × hours/day × days/year × €${price}`;
+        return `hosts × GiB × hours/day × days/year × $${price}`;
       };
     }
 
@@ -244,7 +244,7 @@
     function retainFormula(rateKey) {
       return () => {
         const price = RATE_CARD[rateKey]?.price.toFixed(6) || '0.000000';
-        return `GiB stored × retention days × €${price}`;
+        return `GiB stored × retention days × $${price}`;
       };
     }
 
@@ -253,7 +253,10 @@
     const CAPABILITY_FORMS = {
       AUTOMATIONS: {
         icon: 'other', iconSvg: defaultSvg,
-        fields: dailyFields('aut', 'Workflow executions', 'Total workflow executions per day'),
+        fields: [
+          { id: 'aut_count', label: 'Workflow hours per day', hint: 'Total workflow-hours consumed per day', placeholder: 'e.g. 10', defaultValue: '' },
+          { id: 'aut_days', label: 'Days per year', hint: 'Number of operational days per year', placeholder: 'e.g. 365', defaultValue: '365' }
+        ],
         calculate: dailyCalc('aut', 'AUTOMATIONS'),
         getFormula: dailyFormula('AUTOMATIONS')
       },
@@ -330,7 +333,7 @@
           const d = parseFloat(v.cm_days) || 0;
           return c * h * d * RATE_CARD.CODE_MONITORING.price;
         },
-        getFormula: () => `containers × hours/day × days/year × €${RATE_CARD.CODE_MONITORING?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `containers × hours/day × days/year × $${RATE_CARD.CODE_MONITORING?.price.toFixed(6) || '0.000000'}`
       },
       KUBERNETES_OPERATIONS: {
         icon: 'other', iconSvg: defaultSvg,
@@ -345,7 +348,7 @@
           const d = parseFloat(v.k8s_days) || 0;
           return p * h * d * RATE_CARD.KUBERNETES_OPERATIONS.price;
         },
-        getFormula: () => `pods × hours/day × days/year × €${RATE_CARD.KUBERNETES_OPERATIONS?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `pods × hours/day × days/year × $${RATE_CARD.KUBERNETES_OPERATIONS?.price.toFixed(6) || '0.000000'}`
       },
       COMPUTE: {
         icon: 'other', iconSvg: defaultSvg,
@@ -420,7 +423,7 @@
             <div class="calc-section-icon ${config.icon}">${config.iconSvg}</div>
             <div>
               <div class="calc-section-title">${rate.name}</div>
-              <div class="calc-section-subtitle">${rate.unit} &mdash; €${rate.price.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')}</div>
+              <div class="calc-section-subtitle">${rate.unit} &mdash; $${rate.price.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')}</div>
             </div>
           </div>
           <div class="calc-section-body">
@@ -444,7 +447,7 @@
           </div>
           <div class="section-cost">
             <span class="section-cost-label">Yearly cost:</span>
-            <span class="section-cost-value" id="cost-${capKey}">€0.00</span>
+            <span class="section-cost-value" id="cost-${capKey}">$0.00</span>
           </div>
         `;
         container.appendChild(section);
@@ -480,7 +483,7 @@
     }
 
     function formatCurrency(value) {
-      return '€' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function exportSummary() {
@@ -491,7 +494,7 @@
         const rate = RATE_CARD[capKey];
         if (!config || !rate) return;
         summary += `--- ${rate.name} ---\n`;
-        summary += `Rate: €${rate.price} ${rate.unit}\n`;
+        summary += `Rate: $${rate.price} ${rate.unit}\n`;
         const values = {};
         config.fields.forEach(f => {
           const val = document.getElementById(f.id)?.value || '0';

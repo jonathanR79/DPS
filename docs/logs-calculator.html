@@ -65,8 +65,8 @@
       <div class="total-grand">
         <div class="total-grand-label">Total yearly cost</div>
         <div>
-          <div class="total-grand-value" id="total-grand-value">€0.00</div>
-          <div class="total-monthly" id="total-monthly">≈ €0.00 / month</div>
+          <div class="total-grand-value" id="total-grand-value">$0.00</div>
+          <div class="total-monthly" id="total-monthly">≈ $0.00 / month</div>
         </div>
       </div>
     </div>
@@ -90,7 +90,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>DPS Cost Calculator &mdash; Prices based on contractual rate card. For estimation purposes only.</p>
+    <p>DPS Cost Calculator &mdash; Prices based on the <a href="https://www.dynatrace.com/pricing/rate-card/" target="_blank">official Dynatrace public rate card</a> (USD). For estimation purposes only.</p>
     <p>Not affiliated with Dynatrace. Rate card data from <a href="ratecard.json">ratecard.json</a>.</p>
   </footer>
 
@@ -145,7 +145,7 @@
           const days = parseFloat(v.li_days) || 0;
           return gib * days * RATE_CARD.LOG_MANAGEMENT_INGEST.price;
         },
-        getFormula: () => `GiB/day × days/year × €${RATE_CARD.LOG_MANAGEMENT_INGEST?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `GiB/day × days/year × $${RATE_CARD.LOG_MANAGEMENT_INGEST?.price.toFixed(6) || '0.000000'}`
       },
 
       LOG_MANAGEMENT_ANALYZE: {
@@ -160,7 +160,7 @@
           const days = parseFloat(v.la_days) || 0;
           return gib * days * RATE_CARD.LOG_MANAGEMENT_ANALYZE.price;
         },
-        getFormula: () => `GiB scanned/day × days/year × €${RATE_CARD.LOG_MANAGEMENT_ANALYZE?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `GiB scanned/day × days/year × $${RATE_CARD.LOG_MANAGEMENT_ANALYZE?.price.toFixed(6) || '0.000000'}`
       },
 
       LOG_MANAGEMENT_RETAIN: {
@@ -175,7 +175,7 @@
           const days = parseFloat(v.lr_days) || 0;
           return gib * days * RATE_CARD.LOG_MANAGEMENT_RETAIN.price;
         },
-        getFormula: () => `GiB stored × retention days × €${RATE_CARD.LOG_MANAGEMENT_RETAIN?.price.toFixed(6) || '0.000000'}`
+        getFormula: () => `GiB stored × retention days × $${RATE_CARD.LOG_MANAGEMENT_RETAIN?.price.toFixed(6) || '0.000000'}`
       },
 
       LOGS: {
@@ -190,7 +190,7 @@
           const days = parseFloat(v.lc_days) || 0;
           return events * days * RATE_CARD.LOGS.price;
         },
-        getFormula: () => `events/day × days/year × €${RATE_CARD.LOGS?.price.toFixed(8) || '0.00000000'}`
+        getFormula: () => `events/day × days/year × $${RATE_CARD.LOGS?.price.toFixed(8) || '0.00000000'}`
       }
     };
 
@@ -217,7 +217,7 @@
             <div class="calc-section-icon ${config.icon}">${config.iconSvg}</div>
             <div>
               <div class="calc-section-title">${rate.name}</div>
-              <div class="calc-section-subtitle">${rate.unit} &mdash; €${rate.price.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')}</div>
+              <div class="calc-section-subtitle">${rate.unit} &mdash; $${rate.price.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')}</div>
             </div>
           </div>
           <div class="calc-section-body">
@@ -241,7 +241,7 @@
           </div>
           <div class="section-cost">
             <span class="section-cost-label">Yearly cost:</span>
-            <span class="section-cost-value" id="cost-${capKey}">€0.00</span>
+            <span class="section-cost-value" id="cost-${capKey}">$0.00</span>
           </div>
         `;
         container.appendChild(section);
@@ -277,7 +277,7 @@
     }
 
     function formatCurrency(value) {
-      return '€' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function exportSummary() {
@@ -288,7 +288,7 @@
         const rate = RATE_CARD[capKey];
         if (!config || !rate) return;
         summary += `--- ${rate.name} ---\n`;
-        summary += `Rate: €${rate.price} ${rate.unit}\n`;
+        summary += `Rate: $${rate.price} ${rate.unit}\n`;
         const values = {};
         config.fields.forEach(f => {
           const val = document.getElementById(f.id)?.value || '0';

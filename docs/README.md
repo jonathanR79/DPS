@@ -32,24 +32,24 @@ All state is kept in `sessionStorage` — nothing is sent to any server.
 
 ## Rate Card
 
-> **⚠️ Important:** The included `ratecard.json` is a **sample rate card with randomized price for demonstration purposes only**. It does **not** reflect an actual contractual pricing.
->
-> Before using this calculator for real estimates, you **must** replace `ratecard.json` with the rate card from your Dynatrace contract. The file format is a JSON array of objects:
->
-> ```json
-> [
->   { "key": "FULLSTACK_MONITORING", "name": "Full-Stack Monitoring", "price": "0.005350", "currencyCode": "EUR" },
->   ...
-> ]
-> ```
->
-> Each entry needs:
-> - **`key`** — the DPS capability identifier (must match the keys used in the calculator pages)
-> - **`name`** — display name
-> - **`price`** — unit price as a string
-> - **`currencyCode`** — currency code (e.g. `EUR`)
->
-> You can obtain your rate card from your Dynatrace account team or contract documentation.
+The included `ratecard.json` contains the **public list prices in USD** from the [official Dynatrace pricing rate card](https://www.dynatrace.com/pricing/rate-card/). These are standard public prices and do not reflect any contractual or negotiated pricing.
+
+The file format is a JSON array of objects:
+
+```json
+[
+  { "key": "FULLSTACK_MONITORING", "name": "Full-Stack Monitoring", "price": "0.01", "currencyCode": "USD" },
+  ...
+]
+```
+
+Each entry needs:
+- **`key`** — the DPS capability identifier (must match the keys used in the calculator pages)
+- **`name`** — display name
+- **`price`** — unit price as a string
+- **`currencyCode`** — currency code (e.g. `USD`)
+
+To use contractual or negotiated pricing instead, replace the prices in `ratecard.json` with values from your Dynatrace contract.
 
 ## Tech Stack
 
